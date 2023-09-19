@@ -1,0 +1,154 @@
+{% load static %}
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Chess Bot</title>
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css" integrity="sha384-q94+BZtLrkL1/ohfjR8c6L+A6qzNH9R2hBLwyoAfu3i/WCvQjzL2RQJ3uNHDISdU" crossorigin="anonymous">
+    <link rel="icon" type="image/x-icon" href="https://chessboardjs.com/img/chesspieces/wikipedia/wQ.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/chessboard-1.0.0.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.2/chess.js" integrity="sha384-s3XgLpvmHyscVpijnseAmye819Ee3yaGa8NxstkJVyA6nuDFjt59u1QvuEl/mecz" crossorigin="anonymous"></script>
+  </head>
+
+  <style>
+      .button {
+            background-color: #95bb4a; 
+            border: none;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 36px;
+            margin: 4px 2px;
+            cursor: pointer;
+            height: 140px;
+            width: 400px;
+            border-radius: 12px;
+            }
+        button:hover {
+            background-color: #9dc54c;
+        }
+
+        body {
+        font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+        height:100%;
+        overflow-x: hidden; /* Hide scrollbars */
+        }
+
+        .container {
+          justify-content: center;
+          align-items: center;
+      }
+  </style>
+
+<body style="background-color: #2c3135;">
+    <div class="container-fluid bg-dark">
+        <div class="row">
+            <div class="col-sm-7">
+                <div id="myBoard" style="width: 70%; position: relative; left: 18%; padding: 4%;"></div>
+            </div>
+            <div class="col-sm-2">
+                <a href="game">
+                    <button type="button" class="button" style="position: relative; left: 28%; top:32%; padding: 2%;"><img src="{% static 'img/icons/Bot_Img.png' %}" style="height:80%;"> 
+                        <b>Play Computer</b>
+                    </button>
+                </a> 
+                <h4 style="color:white; position: relative; left: 127%; top:32%; padding: 2%;">Play vs Bot</h4>
+                <p style="color:lightgray; position: relative; left: 32%; top:34%; width: 142%"> 
+                  Play Chess with an algorithm. The algorithm evaluates the best move and the computer perfoms it. Let's try beating a Computer in Chess!
+                </p>
+            </div>
+        </div>
+      </div>
+      
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/"><img src="https://chessboardjs.com/img/chesspieces/wikipedia/wQ.png" style="height: 20%; width: 20%;"> Chess Bot</a>
+      </div>
+    </nav>
+    <div class="container">
+
+      {% for record in records %}
+        <div class="row">
+          <div class="col-sm-6" style="padding: 5%">
+            <a href="{{record.7}}" style="text-decoration:none">
+            <div class="card" style="width:100%; text-align: center; padding: 7%;  background-color: #292c30;">
+              <div id="DisplayBoard{{record.0}}" style="width: 100%;"></div>
+              <script>
+                var board = ChessBoard('DisplayBoard{{record.0}}', '{{record.3}}');
+                board.orientation('black');
+              </script>
+              <div class="card-body">
+                <h4 style="color:white"><b>&#x2654; {{record.4}}</b></h4>
+                <h4 class="card-title" style="color:white">{{record.5}} </h4>
+                <p class="card-text" style="color:wheat">Game ID: {{record.0}}<br>
+                {{record.2}}</p>
+                <a href="{{record.7}}" class="btn btn-success" style="position: absolute; left: 20%; background-color:#37a03c;">{{record.6}}</a>
+                <form method="POST" id="board_form"> {% csrf_token %}
+                  <input type="hidden" value="{{record.0}}" name="del_record_id"/>
+                  <input type="submit" value="Delete Game" class="btn btn-danger" style="position: absolute; right: 20%; background-color:#ff1100;"/>
+                </form>
+              </div>
+            </div>
+            </a>
+          </div>
+          {% if record.8 != complete %}
+            <div class="col-sm-6" style="padding: 5%">
+              <a href="{{record.15}}" style="text-decoration:none">
+              <div class="card" style="width:100%; text-align: center; padding: 7%;  background-color: #292c30;">
+                <div id="DisplayBoard{{record.8}}" style="width: 100%;"></div>
+                <script>
+                  var board = ChessBoard('DisplayBoard{{record.8}}', '{{record.11}}');
+                  board.orientation('black');
+                </script>
+                <div class="card-body">
+                  <h4 style="color:white"><b>&#x2654; {{record.12}}</b></h4>
+                  <h4 class="card-title" style="color:white">{{record.13}} </h4>
+                  <p class="card-text" style="color:wheat">Game ID: {{record.8}}<br>
+                  {{record.10}}</p>
+                  <a href="{{record.15}}" class="btn btn-success" style="position: absolute; left: 20%; background-color:#37a03c;"">{{record.14}}</a>
+                  <form method="POST" id="board_form"> {% csrf_token %}
+                    <input type="hidden" value="{{record.8}}" name="del_record_id"/>
+                    <input type="submit" value="Delete Game" class="btn btn-danger" style="position: absolute; right: 20%; background-color:#ff1100;"/>
+                  </form>
+                </div>
+              </div>
+              </a>
+          </div>
+        {% endif %}
+        </div>
+      {% endfor %}
+
+    <script>
+      // NOTE: this uses the chess.js library:
+      // https://github.com/jhlywa/chess.js
+  
+      var board = null;
+      var game = new Chess();
+
+      function makeRandomMove(){
+            var possibleMoves = game.moves();
+            // if game over
+            if (game.game_over()) return;
+
+            var randomIndx = Math.floor(Math.random() * possibleMoves.length);
+            game.move(possibleMoves[randomIndx]);
+            board.position(game.fen());
+        
+            window.setTimeout(makeRandomMove, 500);
+      }
+      var config = {
+          showNotation: false,
+          position: 'start'
+      }
+      board = ChessBoard('myBoard', config)
+      window.setTimeout(makeRandomMove, 1000);
+    </script>
+
+  </body>
+</html>
